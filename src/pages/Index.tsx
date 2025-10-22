@@ -297,11 +297,11 @@ const Index = () => {
                         </div>
                       </div>
                       
-                      <div className="flex md:flex-col gap-2 p-4 md:p-6 bg-gradient-to-br from-purple-50/50 to-blue-50/50 md:w-48 border-t md:border-t-0 md:border-l border-gray-100">
+                      <div className="flex md:flex-col gap-2 p-3 md:p-4 bg-gradient-to-br from-purple-50/30 to-blue-50/30 md:w-36 border-t md:border-t-0 md:border-l border-gray-100">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button className="flex-1 gradient-primary text-white hover:scale-105 transition-all duration-300 shadow-lg font-semibold">
-                              <Icon name="Send" size={16} className="mr-2" />
+                            <Button size="sm" className="flex-1 gradient-primary text-white hover:scale-105 transition-all duration-300 shadow-md font-semibold text-xs h-8">
+                              <Icon name="Send" size={14} className="mr-1.5" />
                               Откликнуться
                             </Button>
                           </DialogTrigger>
@@ -327,8 +327,8 @@ const Index = () => {
                             </div>
                           </DialogContent>
                         </Dialog>
-                        <Button variant="outline" className="flex-1 hover:bg-white font-semibold">
-                          <Icon name="Eye" size={16} className="mr-2" />
+                        <Button size="sm" variant="outline" className="flex-1 hover:bg-white hover:border-[#6C5CE7] hover:text-[#6C5CE7] transition-all duration-300 font-semibold text-xs h-8">
+                          <Icon name="Eye" size={14} className="mr-1.5" />
                           Подробнее
                         </Button>
                       </div>
