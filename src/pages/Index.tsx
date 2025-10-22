@@ -82,24 +82,37 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/20 to-blue-50/20">
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-purple-100/50 shadow-sm animate-slide-up">
-        <div className="container mx-auto px-4 py-4">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-2xl border-b border-transparent shadow-lg animate-slide-up">
+        <div className="container mx-auto px-4 py-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl gradient-vibrant flex items-center justify-center shadow-lg animate-scale-in">
-                <Icon name="Sparkles" size={24} className="text-white" />
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 gradient-vibrant blur-md opacity-50 rounded-2xl"></div>
+                <div className="relative w-12 h-12 rounded-2xl gradient-vibrant flex items-center justify-center shadow-xl animate-scale-in">
+                  <Icon name="Zap" size={26} className="text-white" />
+                </div>
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] via-[#6C5CE7] to-[#4ECDC4] bg-clip-text text-transparent">
-                Marketplace Requests
-              </h1>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-[#FF6B6B] via-[#6C5CE7] to-[#4ECDC4] bg-clip-text text-transparent tracking-tight">
+                  Marketplace
+                </h1>
+                <p className="text-xs text-gray-500 font-medium">Запросы и предложения</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon">
-                <Icon name="Bell" size={20} />
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" className="relative hover:bg-purple-50">
+                <Icon name="Bell" size={20} className="text-gray-600" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF6B6B] rounded-full"></span>
               </Button>
-              <Avatar>
-                <AvatarFallback className="gradient-secondary text-white">U</AvatarFallback>
-              </Avatar>
+              <Button variant="ghost" size="icon" className="hover:bg-purple-50">
+                <Icon name="Search" size={20} className="text-gray-600" />
+              </Button>
+              <div className="relative group">
+                <div className="absolute inset-0 gradient-secondary blur-sm opacity-0 group-hover:opacity-50 rounded-full transition-opacity"></div>
+                <Avatar className="relative border-2 border-purple-200 cursor-pointer">
+                  <AvatarFallback className="gradient-secondary text-white font-bold">U</AvatarFallback>
+                </Avatar>
+              </div>
             </div>
           </div>
         </div>
@@ -219,61 +232,107 @@ const Index = () => {
 
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold">Актуальные запросы</h3>
-                <Button variant="ghost" className="hover:text-[#6C5CE7] transition-colors font-semibold" onClick={() => setActiveTab('requests')}>
-                  Смотреть все
+                <div>
+                  <h3 className="text-3xl font-bold mb-1">Лента запросов</h3>
+                  <p className="text-gray-500 text-sm">Актуальные предложения от покупателей</p>
+                </div>
+                <Button variant="outline" className="hover:bg-[#6C5CE7] hover:text-white transition-all font-semibold border-2" onClick={() => setActiveTab('requests')}>
+                  Все запросы
                   <Icon name="ArrowRight" size={18} className="ml-2" />
                 </Button>
               </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockRequests.slice(0, 3).map((request) => (
-                  <Card key={request.id} className="hover:shadow-2xl transition-all duration-300 cursor-pointer group rounded-2xl border-2 hover:border-[#6C5CE7] animate-fade-in hover:-translate-y-1">
-                    <CardHeader>
-                      <div className="flex items-start justify-between mb-2">
-                        <Badge className="gradient-accent text-white border-0 shadow-md font-semibold">
-                          {categories.find((c) => c.id === request.category)?.name}
-                        </Badge>
-                        <span className="text-xs text-gray-500">{request.createdAt}</span>
-                      </div>
-                      <CardTitle className="group-hover:text-[#6C5CE7] transition-colors duration-300">
-                        {request.title}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-2">
-                        {request.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="w-8 h-8">
-                            <AvatarFallback className="text-xs gradient-primary text-white">
-                              {request.author.name.split(' ').map((n) => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="text-sm">
-                            <p className="font-medium">{request.author.name}</p>
-                            <div className="flex items-center gap-1 text-xs text-gray-500">
-                              <Icon name="Star" size={12} className="fill-[#FFE66D] text-[#FFE66D]" />
-                              {request.author.rating}
+              <div className="space-y-4">
+                {mockRequests.map((request, index) => (
+                  <Card key={request.id} className="hover:shadow-2xl transition-all duration-300 group rounded-2xl border-2 hover:border-[#6C5CE7] animate-fade-in overflow-hidden" style={{animationDelay: `${index * 100}ms`}}>
+                    <div className="flex flex-col md:flex-row">
+                      <div className="flex-1 p-6">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <Badge className="gradient-accent text-white border-0 shadow-md font-semibold text-xs px-3 py-1">
+                              {categories.find((c) => c.id === request.category)?.name}
+                            </Badge>
+                            <span className="text-xs text-gray-400 flex items-center gap-1">
+                              <Icon name="Clock" size={12} />
+                              {request.createdAt}
+                            </span>
+                          </div>
+                          <Button variant="ghost" size="icon" className="-mt-2 -mr-2">
+                            <Icon name="Bookmark" size={18} className="text-gray-400 group-hover:text-[#6C5CE7]" />
+                          </Button>
+                        </div>
+                        
+                        <h4 className="text-xl font-bold mb-2 group-hover:text-[#6C5CE7] transition-colors duration-300">
+                          {request.title}
+                        </h4>
+                        <p className="text-gray-600 mb-4 line-clamp-2">
+                          {request.description}
+                        </p>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="w-10 h-10 border-2 border-purple-100">
+                              <AvatarFallback className="text-xs gradient-primary text-white font-semibold">
+                                {request.author.name.split(' ').map((n) => n[0]).join('')}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-semibold text-sm">{request.author.name}</p>
+                              <div className="flex items-center gap-2 text-xs text-gray-500">
+                                <div className="flex items-center gap-0.5">
+                                  <Icon name="Star" size={12} className="fill-[#FFE66D] text-[#FFE66D]" />
+                                  <span className="font-medium">{request.author.rating}</span>
+                                </div>
+                                <span>•</span>
+                                <span>{request.author.reviews} отзывов</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <div className="text-right mr-2">
+                              <p className="text-lg font-bold text-[#FF6B6B]">{request.budget}</p>
+                              <p className="text-xs text-gray-500">{request.responses} откликов</p>
                             </div>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-bold text-[#FF6B6B]">{request.budget}</p>
-                          <p className="text-xs text-gray-500">{request.responses} откликов</p>
-                        </div>
                       </div>
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        className="w-full gradient-primary text-white hover:scale-105 transition-all duration-300 shadow-lg font-semibold"
-                        onClick={() => {
-                          setSelectedRequest(request.id);
-                        }}
-                      >
-                        Оставить предложение
-                      </Button>
-                    </CardFooter>
+                      
+                      <div className="flex md:flex-col gap-2 p-4 md:p-6 bg-gradient-to-br from-purple-50/50 to-blue-50/50 md:w-48 border-t md:border-t-0 md:border-l border-gray-100">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button className="flex-1 gradient-primary text-white hover:scale-105 transition-all duration-300 shadow-lg font-semibold">
+                              <Icon name="Send" size={16} className="mr-2" />
+                              Откликнуться
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Оставить предложение</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4 mt-4">
+                              <div>
+                                <label className="text-sm font-medium mb-2 block">Ваше предложение</label>
+                                <Textarea
+                                  placeholder="Опишите ваше предложение, цену и условия..."
+                                  rows={4}
+                                />
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium mb-2 block">Цена</label>
+                                <Input placeholder="Например: 115 000 ₽" />
+                              </div>
+                              <Button className="w-full gradient-primary text-white">
+                                Отправить предложение
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                        <Button variant="outline" className="flex-1 hover:bg-white font-semibold">
+                          <Icon name="Eye" size={16} className="mr-2" />
+                          Подробнее
+                        </Button>
+                      </div>
+                    </div>
                   </Card>
                 ))}
               </div>
