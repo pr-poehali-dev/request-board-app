@@ -81,12 +81,12 @@ const Index = () => {
     : mockRequests;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/20 to-blue-50/20">
+      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-purple-100/50 shadow-sm animate-slide-up">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl gradient-vibrant flex items-center justify-center shadow-lg animate-scale-in">
                 <Icon name="Sparkles" size={24} className="text-white" />
               </div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] via-[#6C5CE7] to-[#4ECDC4] bg-clip-text text-transparent">
@@ -107,7 +107,7 @@ const Index = () => {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8 bg-white shadow-sm">
+          <TabsList className="grid w-full grid-cols-5 mb-8 bg-white shadow-lg rounded-2xl p-1.5 animate-fade-in">
             <TabsTrigger value="home" className="flex items-center gap-2">
               <Icon name="Home" size={18} />
               <span className="hidden sm:inline">Главная</span>
@@ -131,9 +131,9 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="home" className="space-y-8">
-            <div className="relative rounded-3xl overflow-hidden gradient-primary p-8 md:p-12 text-white">
+            <div className="relative rounded-3xl overflow-hidden gradient-vibrant p-8 md:p-12 text-white shadow-2xl animate-fade-in">
               <div className="relative z-10 max-w-2xl">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                <h2 className="text-3xl md:text-5xl font-bold mb-4 animate-slide-up">
                   Найди то, что ищешь
                 </h2>
                 <p className="text-lg md:text-xl mb-6 opacity-90">
@@ -141,7 +141,7 @@ const Index = () => {
                 </p>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button size="lg" className="bg-white text-[#FF6B6B] hover:bg-gray-100">
+                    <Button size="lg" className="bg-white text-[#FF6B6B] hover:bg-gray-50 hover:scale-105 transition-all duration-300 shadow-xl font-semibold">
                       <Icon name="Plus" size={20} className="mr-2" />
                       Создать запрос
                     </Button>
@@ -196,21 +196,21 @@ const Index = () => {
 
             <div>
               <h3 className="text-2xl font-bold mb-6">Популярные категории</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 animate-fade-in">
                 {categories.map((cat) => (
                   <Card
                     key={cat.id}
-                    className="cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 border-2 hover:border-[#4ECDC4]"
+                    className="cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 border-2 hover:border-[#6C5CE7] rounded-2xl animate-scale-in"
                     onClick={() => {
                       setSelectedCategory(cat.id);
                       setActiveTab('requests');
                     }}
                   >
-                    <CardContent className="p-6 text-center">
-                      <div className="w-16 h-16 mx-auto mb-3 rounded-2xl gradient-secondary flex items-center justify-center">
+                    <CardContent className="p-6 text-center group">
+                      <div className="w-16 h-16 mx-auto mb-3 rounded-2xl gradient-purple flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                         <Icon name={cat.icon as any} size={32} className="text-white" />
                       </div>
-                      <p className="font-semibold">{cat.name}</p>
+                      <p className="font-semibold group-hover:text-[#6C5CE7] transition-colors">{cat.name}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -220,22 +220,22 @@ const Index = () => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold">Актуальные запросы</h3>
-                <Button variant="ghost" onClick={() => setActiveTab('requests')}>
+                <Button variant="ghost" className="hover:text-[#6C5CE7] transition-colors font-semibold" onClick={() => setActiveTab('requests')}>
                   Смотреть все
                   <Icon name="ArrowRight" size={18} className="ml-2" />
                 </Button>
               </div>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mockRequests.slice(0, 3).map((request) => (
-                  <Card key={request.id} className="hover:shadow-xl transition-all cursor-pointer group">
+                  <Card key={request.id} className="hover:shadow-2xl transition-all duration-300 cursor-pointer group rounded-2xl border-2 hover:border-[#6C5CE7] animate-fade-in hover:-translate-y-1">
                     <CardHeader>
                       <div className="flex items-start justify-between mb-2">
-                        <Badge className="gradient-accent text-white border-0">
+                        <Badge className="gradient-accent text-white border-0 shadow-md font-semibold">
                           {categories.find((c) => c.id === request.category)?.name}
                         </Badge>
                         <span className="text-xs text-gray-500">{request.createdAt}</span>
                       </div>
-                      <CardTitle className="group-hover:text-[#4ECDC4] transition-colors">
+                      <CardTitle className="group-hover:text-[#6C5CE7] transition-colors duration-300">
                         {request.title}
                       </CardTitle>
                       <CardDescription className="line-clamp-2">
@@ -266,7 +266,7 @@ const Index = () => {
                     </CardContent>
                     <CardFooter>
                       <Button
-                        className="w-full gradient-primary text-white"
+                        className="w-full gradient-primary text-white hover:scale-105 transition-all duration-300 shadow-lg font-semibold"
                         onClick={() => {
                           setSelectedRequest(request.id);
                         }}
