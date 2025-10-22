@@ -1,11 +1,588 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import Icon from '@/components/ui/icon';
+
+const categories = [
+  { id: 'electronics', name: 'Электроника', icon: 'Smartphone' },
+  { id: 'clothes', name: 'Одежда', icon: 'Shirt' },
+  { id: 'home', name: 'Для дома', icon: 'Home' },
+  { id: 'services', name: 'Услуги', icon: 'Briefcase' },
+  { id: 'other', name: 'Другое', icon: 'Package' },
+];
+
+const mockRequests = [
+  {
+    id: 1,
+    title: 'Ищу iPhone 15 Pro',
+    description: 'Нужен iPhone 15 Pro в хорошем состоянии, желательно с коробкой и документами',
+    budget: '120 000 ₽',
+    category: 'electronics',
+    author: { name: 'Андрей М.', avatar: '', rating: 4.8, reviews: 12 },
+    responses: 7,
+    createdAt: '2 часа назад',
+  },
+  {
+    id: 2,
+    title: 'Ищу мастера по ремонту MacBook',
+    description: 'MacBook Pro 2020, не включается. Нужен опытный мастер для диагностики и ремонта',
+    budget: 'до 15 000 ₽',
+    category: 'services',
+    author: { name: 'Мария К.', avatar: '', rating: 5.0, reviews: 8 },
+    responses: 12,
+    createdAt: '5 часов назад',
+  },
+  {
+    id: 3,
+    title: 'Куплю настольную лампу в стиле лофт',
+    description: 'Ищу стильную настольную лампу для рабочего стола, предпочтительно черный металл',
+    budget: '5 000 ₽',
+    category: 'home',
+    author: { name: 'Дмитрий С.', avatar: '', rating: 4.5, reviews: 5 },
+    responses: 3,
+    createdAt: '1 день назад',
+  },
+];
+
+const mockResponses = [
+  {
+    id: 1,
+    requestTitle: 'Ищу iPhone 15 Pro',
+    message: 'Есть iPhone 15 Pro 256GB, состояние отличное, все документы. 115 000₽',
+    price: '115 000 ₽',
+    seller: { name: 'Игорь П.', avatar: '', rating: 4.9, reviews: 24 },
+    createdAt: '30 минут назад',
+  },
+  {
+    id: 2,
+    requestTitle: 'Ищу iPhone 15 Pro',
+    message: 'iPhone 15 Pro 512GB, новый, запечатанный. 130 000₽. Можно встретиться в центре.',
+    price: '130 000 ₽',
+    seller: { name: 'Алексей В.', avatar: '', rating: 4.7, reviews: 18 },
+    createdAt: '1 час назад',
+  },
+];
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState('home');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<number | null>(null);
+
+  const filteredRequests = selectedCategory
+    ? mockRequests.filter((req) => req.category === selectedCategory)
+    : mockRequests;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+                <Icon name="Sparkles" size={24} className="text-white" />
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent">
+                Marketplace Requests
+              </h1>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon">
+                <Icon name="Bell" size={20} />
+              </Button>
+              <Avatar>
+                <AvatarFallback className="gradient-secondary text-white">U</AvatarFallback>
+              </Avatar>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="container mx-auto px-4 py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-5 mb-8 bg-white shadow-sm">
+            <TabsTrigger value="home" className="flex items-center gap-2">
+              <Icon name="Home" size={18} />
+              <span className="hidden sm:inline">Главная</span>
+            </TabsTrigger>
+            <TabsTrigger value="requests" className="flex items-center gap-2">
+              <Icon name="Search" size={18} />
+              <span className="hidden sm:inline">Запросы</span>
+            </TabsTrigger>
+            <TabsTrigger value="my-requests" className="flex items-center gap-2">
+              <Icon name="FileText" size={18} />
+              <span className="hidden sm:inline">Мои запросы</span>
+            </TabsTrigger>
+            <TabsTrigger value="my-responses" className="flex items-center gap-2">
+              <Icon name="MessageSquare" size={18} />
+              <span className="hidden sm:inline">Отклики</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="flex items-center gap-2">
+              <Icon name="User" size={18} />
+              <span className="hidden sm:inline">Профиль</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="home" className="space-y-8">
+            <div className="relative rounded-3xl overflow-hidden gradient-primary p-8 md:p-12 text-white">
+              <div className="relative z-10 max-w-2xl">
+                <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                  Найди то, что ищешь
+                </h2>
+                <p className="text-lg md:text-xl mb-6 opacity-90">
+                  Размещай запросы и получай предложения от продавцов
+                </p>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button size="lg" className="bg-white text-[#FF6B6B] hover:bg-gray-100">
+                      <Icon name="Plus" size={20} className="mr-2" />
+                      Создать запрос
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl">Создать новый запрос</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 mt-4">
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Заголовок</label>
+                        <Input placeholder="Например: Ищу iPhone 15 Pro" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Категория</label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Выберите категорию" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id}>
+                                {cat.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Описание</label>
+                        <Textarea
+                          placeholder="Опишите подробно, что вы ищете..."
+                          rows={4}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Бюджет (опционально)</label>
+                        <Input placeholder="Например: до 50 000 ₽" />
+                      </div>
+                      <Button className="w-full gradient-primary text-white">
+                        Опубликовать запрос
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+              <div className="absolute top-0 right-0 w-1/2 h-full opacity-20">
+                <div className="absolute top-10 right-10 w-32 h-32 bg-white rounded-full blur-3xl" />
+                <div className="absolute bottom-10 right-20 w-48 h-48 bg-white rounded-full blur-3xl" />
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold mb-6">Популярные категории</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                {categories.map((cat) => (
+                  <Card
+                    key={cat.id}
+                    className="cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 border-2 hover:border-[#4ECDC4]"
+                    onClick={() => {
+                      setSelectedCategory(cat.id);
+                      setActiveTab('requests');
+                    }}
+                  >
+                    <CardContent className="p-6 text-center">
+                      <div className="w-16 h-16 mx-auto mb-3 rounded-2xl gradient-secondary flex items-center justify-center">
+                        <Icon name={cat.icon as any} size={32} className="text-white" />
+                      </div>
+                      <p className="font-semibold">{cat.name}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold">Актуальные запросы</h3>
+                <Button variant="ghost" onClick={() => setActiveTab('requests')}>
+                  Смотреть все
+                  <Icon name="ArrowRight" size={18} className="ml-2" />
+                </Button>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {mockRequests.slice(0, 3).map((request) => (
+                  <Card key={request.id} className="hover:shadow-xl transition-all cursor-pointer group">
+                    <CardHeader>
+                      <div className="flex items-start justify-between mb-2">
+                        <Badge className="gradient-accent text-white border-0">
+                          {categories.find((c) => c.id === request.category)?.name}
+                        </Badge>
+                        <span className="text-xs text-gray-500">{request.createdAt}</span>
+                      </div>
+                      <CardTitle className="group-hover:text-[#4ECDC4] transition-colors">
+                        {request.title}
+                      </CardTitle>
+                      <CardDescription className="line-clamp-2">
+                        {request.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="w-8 h-8">
+                            <AvatarFallback className="text-xs gradient-primary text-white">
+                              {request.author.name.split(' ').map((n) => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="text-sm">
+                            <p className="font-medium">{request.author.name}</p>
+                            <div className="flex items-center gap-1 text-xs text-gray-500">
+                              <Icon name="Star" size={12} className="fill-[#FFE66D] text-[#FFE66D]" />
+                              {request.author.rating}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-[#FF6B6B]">{request.budget}</p>
+                          <p className="text-xs text-gray-500">{request.responses} откликов</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button
+                        className="w-full gradient-primary text-white"
+                        onClick={() => {
+                          setSelectedRequest(request.id);
+                        }}
+                      >
+                        Оставить предложение
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="requests" className="space-y-6">
+            <div className="flex items-center gap-4 mb-6 overflow-x-auto">
+              <Button
+                variant={selectedCategory === null ? 'default' : 'outline'}
+                onClick={() => setSelectedCategory(null)}
+                className={selectedCategory === null ? 'gradient-primary text-white' : ''}
+              >
+                Все категории
+              </Button>
+              {categories.map((cat) => (
+                <Button
+                  key={cat.id}
+                  variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={selectedCategory === cat.id ? 'gradient-secondary text-white' : ''}
+                >
+                  {cat.name}
+                </Button>
+              ))}
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {filteredRequests.map((request) => (
+                <Card key={request.id} className="hover:shadow-xl transition-all">
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-2">
+                      <Badge className="gradient-accent text-white border-0">
+                        {categories.find((c) => c.id === request.category)?.name}
+                      </Badge>
+                      <span className="text-xs text-gray-500">{request.createdAt}</span>
+                    </div>
+                    <CardTitle>{request.title}</CardTitle>
+                    <CardDescription>{request.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback className="text-xs gradient-primary text-white">
+                            {request.author.name.split(' ').map((n) => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="text-sm">
+                          <p className="font-medium">{request.author.name}</p>
+                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                            <Icon name="Star" size={12} className="fill-[#FFE66D] text-[#FFE66D]" />
+                            {request.author.rating}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-[#FF6B6B]">{request.budget}</p>
+                        <p className="text-xs text-gray-500">{request.responses} откликов</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="gap-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="flex-1 gradient-primary text-white">
+                          Оставить предложение
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Оставить предложение</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 mt-4">
+                          <div>
+                            <label className="text-sm font-medium mb-2 block">Ваше предложение</label>
+                            <Textarea
+                              placeholder="Опишите ваше предложение, цену и условия..."
+                              rows={4}
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium mb-2 block">Цена</label>
+                            <Input placeholder="Например: 115 000 ₽" />
+                          </div>
+                          <Button className="w-full gradient-primary text-white">
+                            Отправить предложение
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    <Button variant="outline" size="icon">
+                      <Icon name="Heart" size={18} />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="my-requests" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-2xl font-bold">Мои запросы</h3>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="gradient-primary text-white">
+                    <Icon name="Plus" size={18} className="mr-2" />
+                    Создать запрос
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl">Создать новый запрос</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 mt-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Заголовок</label>
+                      <Input placeholder="Например: Ищу iPhone 15 Pro" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Категория</label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите категорию" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((cat) => (
+                            <SelectItem key={cat.id} value={cat.id}>
+                              {cat.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Описание</label>
+                      <Textarea
+                        placeholder="Опишите подробно, что вы ищете..."
+                        rows={4}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Бюджет (опционально)</label>
+                      <Input placeholder="Например: до 50 000 ₽" />
+                    </div>
+                    <Button className="w-full gradient-primary text-white">
+                      Опубликовать запрос
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {mockRequests.slice(0, 2).map((request) => (
+                <Card key={request.id}>
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-2">
+                      <Badge className="gradient-accent text-white border-0">
+                        {categories.find((c) => c.id === request.category)?.name}
+                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon">
+                          <Icon name="Edit" size={16} />
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                          <Icon name="Trash2" size={16} />
+                        </Button>
+                      </div>
+                    </div>
+                    <CardTitle>{request.title}</CardTitle>
+                    <CardDescription>{request.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <p className="font-bold text-[#FF6B6B]">{request.budget}</p>
+                      <Badge variant="secondary">{request.responses} откликов</Badge>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full">
+                      <Icon name="MessageSquare" size={18} className="mr-2" />
+                      Посмотреть отклики ({request.responses})
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="my-responses" className="space-y-6">
+            <h3 className="text-2xl font-bold">Мои отклики</h3>
+            <div className="space-y-4">
+              {mockResponses.map((response) => (
+                <Card key={response.id}>
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg mb-1">{response.requestTitle}</CardTitle>
+                        <CardDescription>{response.message}</CardDescription>
+                      </div>
+                      <Button variant="ghost" size="icon">
+                        <Icon name="MoreVertical" size={18} />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <p className="font-bold text-[#4ECDC4]">{response.price}</p>
+                      <span className="text-xs text-gray-500">{response.createdAt}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="profile" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <Avatar className="w-20 h-20">
+                    <AvatarFallback className="text-2xl gradient-primary text-white">
+                      U
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <CardTitle className="text-2xl mb-2">Пользователь</CardTitle>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <Icon name="Star" size={16} className="fill-[#FFE66D] text-[#FFE66D]" />
+                        <span className="font-semibold">4.8</span>
+                      </div>
+                      <span>24 отзыва</span>
+                      <span>15 сделок</span>
+                    </div>
+                  </div>
+                  <Button variant="outline">
+                    <Icon name="Edit" size={18} className="mr-2" />
+                    Редактировать
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h4 className="font-semibold mb-3">Статистика</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <Card>
+                      <CardContent className="p-4 text-center">
+                        <p className="text-2xl font-bold text-[#FF6B6B] mb-1">8</p>
+                        <p className="text-sm text-gray-600">Активных запросов</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4 text-center">
+                        <p className="text-2xl font-bold text-[#4ECDC4] mb-1">23</p>
+                        <p className="text-sm text-gray-600">Откликов получено</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4 text-center">
+                        <p className="text-2xl font-bold text-[#FFE66D] mb-1">15</p>
+                        <p className="text-sm text-gray-600">Сделок завершено</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-3">Последние отзывы</h4>
+                  <div className="space-y-3">
+                    {[1, 2, 3].map((i) => (
+                      <Card key={i}>
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-3">
+                            <Avatar className="w-10 h-10">
+                              <AvatarFallback className="gradient-secondary text-white text-sm">
+                                ИП
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-1">
+                                <p className="font-medium">Игорь П.</p>
+                                <div className="flex items-center gap-1">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <Icon
+                                      key={star}
+                                      name="Star"
+                                      size={14}
+                                      className="fill-[#FFE66D] text-[#FFE66D]"
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-600">
+                                Отличный покупатель, быстро отвечает, все прошло гладко!
+                              </p>
+                              <span className="text-xs text-gray-500 mt-1 block">2 дня назад</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
