@@ -24,8 +24,8 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 51 100% 70%;
-    --accent-foreground: 210 11% 15%;
+    --accent: 249 53% 65%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 70%;
     --destructive-foreground: 0 0% 100%;
@@ -36,10 +36,11 @@
 
     --radius: 0.75rem;
 
-    --coral: 0 70% 70%;
-    --turquoise: 182 53% 54%;
-    --yellow: 51 100% 70%;
-    --navy: 210 44% 12%;
+    --vibrant-red: 0 70% 70%;
+    --sunny-teal: 182 53% 54%;
+    --sunny-yellow: 51 100% 70%;
+    --purple: 249 53% 65%;
+    --dark-gray: 210 11% 21%;
 
     --sidebar-background: 0 0% 98%;
 
@@ -119,14 +120,18 @@
 
 @layer utilities {
   .gradient-primary {
-    background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+    background: linear-gradient(135deg, #ff6b6b 0%, #6c5ce7 100%);
   }
 
   .gradient-secondary {
-    background: linear-gradient(135deg, #4ecdc4 0%, #ffe66d 100%);
+    background: linear-gradient(135deg, #4ecdc4 0%, #6c5ce7 100%);
   }
 
   .gradient-accent {
     background: linear-gradient(135deg, #ffe66d 0%, #ff6b6b 100%);
+  }
+
+  .gradient-purple {
+    background: linear-gradient(135deg, #6c5ce7 0%, #4ecdc4 100%);
   }
 }

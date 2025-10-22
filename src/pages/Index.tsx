@@ -89,7 +89,7 @@ const Index = () => {
               <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
                 <Icon name="Sparkles" size={24} className="text-white" />
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] to-[#4ECDC4] bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] via-[#6C5CE7] to-[#4ECDC4] bg-clip-text text-transparent">
                 Marketplace Requests
               </h1>
             </div>
